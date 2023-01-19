@@ -1,0 +1,67 @@
+<h1>Order ({{name | uppercase}})</h1>
+<h2><code>{{ order | json }}</code></h2>
+
+<form [formGroup]="form" (ngSubmit)="process()">
+    <table>
+        <tr>
+            <td>Name: </td>
+            <td>
+                <input type="text" formControlName="name">  <!-- no need name, name in control -->
+            </td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td><input type="email" formControlName="email"
+                [ngClass]="{'error': form.dirty && form.get('email')?.invalid}">
+            </td>
+        </tr>
+        <tr>
+            <td>Rush: </td>
+            <td>
+                <input type="radio" formControlName="rush">
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <div> Valid: {{ form.valid }}, invalid: {{ form.invalid }} </div>
+                <div> pristine: {{ form.pristine }}, dirty: {{ form.dirty }} </div>
+                <div> email: {{ form.get('email')?.invalid }} </div>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button type="button" (click)="clearForm()">Clear</button>
+                <button type="button" (click)="addItem()">Add Item</button>
+                <button type="submit" [disabled]="form.invalid">Process</button>
+            </td>
+        </tr>
+    </table>
+
+    <div *ngIf="lineItems.length == 0">
+        Your cart is empty
+    </div>
+    <table *ngIf="lineItems.length > 0">
+        <thead>
+            <tr>
+                <td>Item</td>
+                <td>Quantity</td>
+            </tr>
+        </thead>
+        <tbody formArrayName="lineItems">
+            <!-- <tr *ngFor="let li of lineItems.controls; let idx = index" [formGroup]="li"> -->
+            <tr *ngFor="let li of lineItems.controls; let idx = index" [formGroupName]="idx">
+                <td>
+                    <input type="text" placeholder="item" size="30" formControlName="item">
+                </td>
+                <td>
+                    <input type="number" placeholder="Minimum order is 1" formControlName="quantity">
+                </td>
+                <td>
+                    <button type="button" (click)="deleteItem(idx)">X</button>
+                </td>
+            </tr>
+        </tbody>
+    </table> 
+</form>
